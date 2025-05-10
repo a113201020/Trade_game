@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>白圭理財 App 模擬</title>
+  <style>
+    body {
+      font-family: 'Microsoft JhengHei', sans-serif;
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+    h1 {
+      background-color: #444;
+      color: white;
+      padding: 20px 0;
+    }
+    button {
+      width: 260px;
+      height: 45px;
+      margin: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      background-color: #2a9d8f;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    select {
+      font-size: 16px;
+      margin: 5px;
+      padding: 5px;
+    }
+    #result {
+      white-space: pre-line;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>白圭理財 App 模擬</h1>
+
+  <div id="money" style="font-weight:bold; margin-bottom: 10px;"></div>
+
+  <button onclick="showAdvice()">📈 投資建議</button><br><br>
+
+  <label for="regionSelect">選擇地區：</label>
+  <select id="regionSelect">
+    <option value="燕國">燕國</option>
+    <option value="趙國">趙國</option>
+    <option value="楚國">楚國</option>
+  </select>
+
+  <label for="productSelect">選擇商品：</label>
+  <select id="productSelect">
+    <option value="鹽">鹽</option>
+    <option value="木材">木材</option>
+    <option value="絲綢">絲綢</option>
+  </select>
+
+  <br><br>
+  <button onclick="simulateTrade()">💼 模擬商品交易</button><br><br>
+  <button onclick="showMap()">🌍 地區貿易地圖</button>
+
+  <div id="result" style="margin-top: 20px; font-size: 18px;"></div>
+
+  <script>
+    const tradeData = {
+      "燕國": { "鹽": 300, "木材": -150, "絲綢": 100 },
+      "趙國": { "鹽": 200, "木材": 250, "絲綢": -100 },
+      "楚國": { "鹽": -50, "木材": 50, "絲綢": 500 },
+    };
+
+    let totalMoney = 1000;
+
+    function updateMoneyDisplay() {
+      document.getElementById("money").innerText = `目前資產：${totalMoney} 錢`;
+    }
+
+    function simulateTrade() {
+      const region = document.getElementById("regionSelect").value;
+      const product = document.getElementById("productSelect").value;
+
+      let output = "";
+      const baseProfit = tradeData[region]?.[product];
+
+      if (baseProfit === undefined) {
+        output = "該地無法交易此商品。";
+      } else {
+        totalMoney += baseProfit;
+        if (baseProfit >= 0) {
+          output = `你在${region}賣${product}，獲利 ${baseProfit} 錢。`;
+        } else {
+          output = `你在${region}賣${product}，虧損 ${-baseProfit} 錢。`;
+        }
+
+        const rand = Math.random();
+        if (rand < 0.2) {
+          const eventType = Math.random();
+          if (eventType < 0.5) {
+            totalMoney -= 100;
+            output += "\n⚠️ 遇到強盜，被搶走 100 錢！";
+          } else {
+            totalMoney += 100;
+            output += "\n🎉 遇到貴人幫助，獲得 100 錢！";
+          }
+        }
+      }
+
+      updateMoneyDisplay();
+      document.getElementById("result").innerText = "💰 交易結果：\n" + output;
+    }
+
+    const adviceList = [
+      "能市則市，無市則去。",
+      "商者，逐利也，然亦觀時而動。",
+      "知勢者富，察人者安。",
+      "貨悖而入者，亦悖而出。",
+      "因地制宜，擇人交易。"
+    ];
+
+    function showAdvice() {
+      const advice = adviceList[Math.floor(Math.random() * adviceList.length)];
+      document.getElementById("result").innerText = "📜 白圭語錄：\n" + advice;
+    }
+
+    function showMap() {
+      const mapInfo = "📍 地區需求模擬：\n- 燕國：缺鹽\n- 趙國：木材貴\n- 楚國：絲綢盛行";
+      document.getElementById("result").innerText = mapInfo;
+    }
+
+    window.onload = updateMoneyDisplay;
+  </script>
+</body>
+</html>
